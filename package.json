@@ -1,0 +1,21 @@
+{
+  "name": "jave-wordle-rxjs-game",
+  "version": "1.0.0",
+  "description": "A wordle game using rxjs library",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack serve"
+  },
+  "keywords": [],
+  "author": "Gerson David Zambrano",
+  "license": "ISC",
+  "dependencies": {
+    "rxjs": "^7.8.0",
+    "webpack": "^5.76.2",
+    "webpack-dev-server": "^4.13.1"
+  },
+  "devDependencies": {
+    "webpack-cli": "^5.0.1"
+  }
+}
