@@ -1,9 +1,8 @@
-import { filter, fromEvent, map, Subject, takeUntil } from "rxjs";
+import { fromEvent, Subject, } from "rxjs";
 import WORDS_LIST from './wordsList.json';
 
 const letterRows = document.getElementsByClassName('letter-row');
 const messageText = document.getElementById('message-text');
-const resetButton = document.getElementById('restart-button');
 
 const onKeyDown$ = fromEvent(document, "keydown");
 let letterIndex = 0;
