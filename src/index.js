@@ -1,8 +1,9 @@
-import { fromEvent, Subject } from "rxjs";
+import { filter, fromEvent, map, Subject, takeUntil } from "rxjs";
 import WORDS_LIST from './wordsList.json';
 
 const letterRows = document.getElementsByClassName('letter-row');
 const messageText = document.getElementById('message-text');
+const resetButton = document.getElementById('restart-button');
 
 const onKeyDown$ = fromEvent(document, "keydown");
 let letterIndex = 0;
@@ -17,7 +18,7 @@ const userWinOrLosse$ = new Subject();
 const keyDownObserver = {
     next: (event) => {
         const pressedKey = event.key.toUpperCase();
-        if (pressedKey.length === 1 && pressedKey.match(/[a-z]/i)) {
+        if (pressedKey.length === 1 && pressedKey.match(/[a-z]/i) && letterIndex < 5) {
             let letterBox = Array.from(letterRows)[letterRowIndex].children[letterIndex];
             letterBox.textContent = pressedKey;
             userAnswer.push(pressedKey);
@@ -46,14 +47,13 @@ const deleteLetter = {
 const checkWord = {
     next: (event) => {
         if (event.key === 'Enter') {
-
             const rightWordArray = Array.from(rightWord);
             if (userAnswer.length !== 5) {
-                messageText.textContent = "Te faltan algunas letras!"
+                let missingWords = userAnswer.length;
+                messageText.textContent = `Te faltan ${5 - missingWords} letras!`
                 return;
-            } else {
-                messageText.textContent = "";
-            }
+            } 
+
 
             for (let index = 0; index < 5; index++) {
                 let letterColor = "";
@@ -74,15 +74,29 @@ const checkWord = {
                 
             }
 
+            if (userAnswer.join("") === rightWord) {
+                messageText.textContent = "¡Has ganado! 😃";
+                userWinOrLosse$.next();
+            }
+
+            if (letterRowIndex > 4) {
+                messageText.textContent = "¡Perdiste, intenta nuevamente! 😃";
+                Array.from(letterRows).map((row) =>
+                Array.from(row.children).map((letterBox) => {
+                  letterBox.textContent = "";
+                  letterBox.classList = "letter";
+                }));
+
+                setTimeout(() => {
+                    messageText.textContent = '';
+                }, 3000)
+                
+            }
             if (userAnswer.length === 5) {
                 letterIndex = 0;
                 letterRowIndex++;
                 userAnswer = [];
             } 
-
-            if (userAnswer.join("") === rightWord) {
-                userWinOrLosse$.next();
-            }
         }
     }
 }
@@ -93,9 +107,7 @@ onKeyDown$.subscribe(deleteLetter);
 
 userWinOrLosse$.subscribe(() => {
     let completeWordRow = Array.from(letterRows)[letterRowIndex];
-    console.log(completeWordRow);
     for (let index = 0; index < 5; index++) {
-        completeWordRow.children[index].classList.add('letter-green');
-        
+        completeWordRow.children[index].classList.add('letter-green');   
     }
 })
