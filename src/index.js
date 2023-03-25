@@ -4,7 +4,9 @@ import WORDS_LIST from './wordsList.json';
 const letterRows = document.getElementsByClassName('letter-row');
 const messageText = document.getElementById('message-text');
 
+// Observable
 const onKeyDown$ = fromEvent(document, "keydown");
+
 let letterIndex = 0;
 let letterRowIndex = 0;
 let userAnswer = [];
@@ -14,6 +16,7 @@ console.log(rightWord);
 
 const userWinOrLosse$ = new Subject();
 
+// Observers
 const keyDownObserver = {
     next: (event) => {
         const pressedKey = event.key.toUpperCase();
@@ -30,6 +33,7 @@ const keyDownObserver = {
 
 const deleteLetter = {
     next: (event) => { 
+        console.log(event);
         const pressedKey = event.key;
         if (pressedKey === 'Backspace' && letterIndex !== 0) {
             let currentRow = letterRows[letterRowIndex];
@@ -100,6 +104,7 @@ const checkWord = {
     }
 }
 
+// Subscriptions
 onKeyDown$.subscribe(keyDownObserver);
 onKeyDown$.subscribe(checkWord);
 onKeyDown$.subscribe(deleteLetter);
